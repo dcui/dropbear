@@ -20,7 +20,7 @@
 #endif
 /* Close connections to clients which haven't authorised after AUTH_TIMEOUT */
 #ifndef AUTH_TIMEOUT
-#define AUTH_TIMEOUT 300 /* we choose 5 minutes */
+#define AUTH_TIMEOUT 300000 /* we choose 5 minutes */
 #endif
 
  #define DROPBEAR_SVR_PUBKEY_OPTIONS_BUILT ((DROPBEAR_SVR_PUBKEY_AUTH) && (DROPBEAR_SVR_PUBKEY_OPTIONS))

@@ -233,6 +233,7 @@ void channelio(fd_set *readfds, fd_set *writefds) {
 
 		/* write to program/pipe stdin */
 		if (channel->writefd >= 0 && FD_ISSET(channel->writefd, writefds)) {
+			printf("cdx: writechannel......................\n");
 			writechannel(channel, channel->writefd, channel->writebuf, NULL, NULL);
 			do_check_close = 1;
 		}

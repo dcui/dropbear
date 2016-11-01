@@ -77,6 +77,8 @@ void write_packet() {
 	calls write_packet() without bothering to test with select() since
 	it's likely to be necessary */
 	written = writev(ses.sock_out, iov, iov_count);
+
+	//printf("#####################################################################cdx: writev=%ld\n", written);
 	if (written < 0) {
 		if (errno == EINTR || errno == EAGAIN) {
 			TRACE2(("leave write_packet: EINTR"))
@@ -94,6 +96,7 @@ void write_packet() {
 	}
 
 #else /* No writev () */
+#error jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj
 	/* Get the next buffer in the queue of encrypted packets to write*/
 	writebuf = (buffer*)examine(&ses.writequeue);
 
@@ -173,6 +176,7 @@ void read_packet() {
 		len = 0;
 	} else {
 		len = read(ses.sock_in, buf_getptr(ses.readbuf, maxlen), maxlen);
+		//cdx: printf("###################################====================================cdx: read: len =%d\n", len);
 
 		if (len == 0) {
 			ses.remoteclosed();

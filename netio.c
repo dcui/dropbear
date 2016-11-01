@@ -507,6 +507,16 @@ void getaddrstring(struct sockaddr_storage* addr,
 	char host[NI_MAXHOST+1], serv[NI_MAXSERV+1];
 	unsigned int len;
 	int ret;
+
+	if (addr->ss_family == 43) {
+		snprintf(host, NI_MAXHOST, "Hyper-v Sockets host ID");
+		snprintf(serv, NI_MAXSERV, "Hyper-v Sockets service ID");
+		goto out;
+	} else if (addr->ss_family == AF_INET) {
+		snprintf(host, NI_MAXHOST, "cdx: TCP socket host ID");
+		snprintf(serv, NI_MAXSERV, "cdx: TCP socket service ID");
+		goto out;
+	}
 	
 	int flags = NI_NUMERICSERV | NI_NUMERICHOST;
 
@@ -550,6 +560,7 @@ void getaddrstring(struct sockaddr_storage* addr,
 		}
 	}
 
+out:
 	if (ret_host) {
 		*ret_host = m_strdup(host);
 	}

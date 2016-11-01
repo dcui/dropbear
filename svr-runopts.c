@@ -127,7 +127,7 @@ void svr_getopts(int argc, char ** argv) {
 	svr_opts.bannerfile = NULL;
 	svr_opts.banner = NULL;
 	svr_opts.forced_command = NULL;
-	svr_opts.forkbg = 1;
+	svr_opts.forkbg = 0;
 	svr_opts.norootlogin = 0;
 	svr_opts.noauthpass = 0;
 	svr_opts.norootpass = 0;
@@ -156,7 +156,7 @@ void svr_getopts(int argc, char ** argv) {
 	svr_opts.domotd = 1;
 #endif
 #ifndef DISABLE_SYSLOG
-	opts.usingsyslog = 1;
+	opts.usingsyslog = 0;
 #endif
 	opts.recv_window = DEFAULT_RECV_WINDOW;
 	opts.keepalive_secs = DEFAULT_KEEPALIVE;

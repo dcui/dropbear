@@ -80,7 +80,7 @@ void (*_dropbear_log)(int priority, const char* format, va_list param)
 						= generic_dropbear_log;
 
 #if DEBUG_TRACE
-int debug_trace = 0;
+int debug_trace = 0; // = 0;
 #endif
 
 #ifndef DISABLE_SYSLOG

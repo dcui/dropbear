@@ -295,14 +295,19 @@ static void main_noinetd() {
 #endif /* DEBUG_FORKGPROF */
 
 				getaddrstring(&remoteaddr, NULL, &remote_port, 0);
+				//sleep(60); //cdx
+				printf("cdx: client forked..................\n");
+				dropbear_log(LOG_ERR, "***************cdx----------------: client forked\n");
 				dropbear_log(LOG_INFO, "Child connection from %s:%s", remote_host, remote_port);
 				m_free(remote_host);
 				m_free(remote_port);
 
+#if 0
 #ifndef DEBUG_NOFORK
 				if (setsid() < 0) {
 					dropbear_exit("setsid: %s", strerror(errno));
 				}
+#endif
 #endif
 
 				/* make sure we close sockets */
@@ -401,16 +406,51 @@ static void commonsetup() {
 	seedrandom();
 }
 
+#define AF_HYPERV	43
+#define HV_PROTO_RAW	1
+/* GUID: "7fdfd0ea-cea8-4576-92d6-e072ddd2c422" */
+
+#define SERVICE_ID     \
+	{0xea, 0xd0, 0xdf, 0x7f, 0xa8, 0xce, 0x76, 0x45, \
+	 0x92, 0xd6, 0xe0, 0x72, 0xdd, 0xd2, 0xc4, 0x22}
+
+typedef struct _sockaddr_hv {
+	sa_family_t       shv_family;	/* Address family       */
+	__le16            __reserved;	/* Must be zero         */
+	unsigned char     shv_vm_id[16];      /* not used by Linux. Must be Zero */
+	unsigned char     shv_service_id[16]; /* Service ID           */
+} sockaddr_hv;
+
+static sockaddr_hv local_addr = {
+	.shv_family = AF_HYPERV,
+	.shv_service_id = SERVICE_ID,
+};
+
 /* Set up listening sockets for all the requested ports */
 static size_t listensockets(int *socks, size_t sockcount, int *maxfd) {
 
-	unsigned int i, n;
-	char* errstring = NULL;
+	//unsigned int i, n;
+	//char* errstring = NULL;
 	size_t sockpos = 0;
-	int nsock;
+	//int nsock;
+	int hv_fd, ret;
 
 	TRACE(("listensockets: %d to try", svr_opts.portcount))
 
+	hv_fd = socket(AF_HYPERV, SOCK_STREAM, HV_PROTO_RAW);
+	assert(hv_fd != -1);
+
+	ret = bind(hv_fd, (struct sockaddr *)&local_addr, sizeof(local_addr));
+	assert(ret != -1);
+
+	ret = listen(hv_fd, 10);
+	assert(ret != -1);
+
+	socks[0] =hv_fd;
+	*maxfd = hv_fd;
+	sockpos = 1;
+
+#if 0
 	for (i = 0; i < svr_opts.portcount; i++) {
 
 		TRACE(("listening on '%s:%s'", svr_opts.addresses[i], svr_opts.ports[i]))
@@ -437,5 +477,6 @@ static size_t listensockets(int *socks, size_t sockcount, int *maxfd) {
 		sockpos += nsock;
 
 	}
+#endif
 	return sockpos;
 }
